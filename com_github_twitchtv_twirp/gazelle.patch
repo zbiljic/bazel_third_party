@@ -1,0 +1,2891 @@
+diff --git a/BUILD.bazel b/BUILD.bazel
+new file mode 100644
+index 0000000..a6a31f8
+--- /dev/null
++++ b/BUILD.bazel
+@@ -0,0 +1,37 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "twirp",
++    srcs = [
++        "client_options.go",
++        "context.go",
++        "errors.go",
++        "interceptors.go",
++        "server_options.go",
++        "version_constant.go",
++    ],
++    importpath = "github.com/twitchtv/twirp",
++    visibility = ["//visibility:public"],
++    deps = ["//internal/contextkeys"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":twirp",
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "twirp_test",
++    srcs = [
++        "client_options_test.go",
++        "errors_1_13_test.go",
++        "errors_test.go",
++        "interceptors_test.go",
++        "license_test.go",
++        "server_options_test.go",
++        "vendor_test.go",
++    ],
++    embed = [":twirp"],
++    deps = ["//vendor/github.com/pkg/errors"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/gogoproto/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/gogoproto/BUILD.bazel
+new file mode 100644
+index 0000000..408b325
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/gogoproto/BUILD.bazel
+@@ -0,0 +1,22 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "gogoproto",
++    srcs = [
++        "doc.go",
++        "gogo.pb.go",
++        "helper.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/gogoproto",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/gogo/protobuf/proto",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/descriptor:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":gogoproto",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/compare/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/compare/BUILD.bazel
+new file mode 100644
+index 0000000..59c0265
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/compare/BUILD.bazel
+@@ -0,0 +1,25 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "compare",
++    srcs = [
++        "compare.go",
++        "comparetest.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/compare",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/gogo/protobuf/proto",
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//plugin/testgen:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/descriptor:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++        "@com_github_gogo_protobuf//vanity:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":compare",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/defaultcheck/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/defaultcheck/BUILD.bazel
+new file mode 100644
+index 0000000..f52f402
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/defaultcheck/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "defaultcheck",
++    srcs = ["defaultcheck.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/defaultcheck",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":defaultcheck",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/description/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/description/BUILD.bazel
+new file mode 100644
+index 0000000..cc893ef
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/description/BUILD.bazel
+@@ -0,0 +1,24 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "description",
++    srcs = [
++        "description.go",
++        "descriptiontest.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/description",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/gogo/protobuf/proto",
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//plugin/testgen:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/descriptor:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":description",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/embedcheck/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/embedcheck/BUILD.bazel
+new file mode 100644
+index 0000000..458462c
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/embedcheck/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "embedcheck",
++    srcs = ["embedcheck.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/embedcheck",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":embedcheck",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/enumstringer/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/enumstringer/BUILD.bazel
+new file mode 100644
+index 0000000..e15a1a5
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/enumstringer/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "enumstringer",
++    srcs = ["enumstringer.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/enumstringer",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":enumstringer",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/equal/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/equal/BUILD.bazel
+new file mode 100644
+index 0000000..6e265a9
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/equal/BUILD.bazel
+@@ -0,0 +1,25 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "equal",
++    srcs = [
++        "equal.go",
++        "equaltest.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/equal",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/gogo/protobuf/proto",
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//plugin/testgen:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/descriptor:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++        "@com_github_gogo_protobuf//vanity:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":equal",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/face/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/face/BUILD.bazel
+new file mode 100644
+index 0000000..476574f
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/face/BUILD.bazel
+@@ -0,0 +1,22 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "face",
++    srcs = [
++        "face.go",
++        "facetest.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/face",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//plugin/testgen:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":face",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/gostring/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/gostring/BUILD.bazel
+new file mode 100644
+index 0000000..e660995
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/gostring/BUILD.bazel
+@@ -0,0 +1,22 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "gostring",
++    srcs = [
++        "gostring.go",
++        "gostringtest.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/gostring",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//plugin/testgen:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":gostring",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/marshalto/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/marshalto/BUILD.bazel
+new file mode 100644
+index 0000000..ca1d393
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/marshalto/BUILD.bazel
+@@ -0,0 +1,21 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "marshalto",
++    srcs = ["marshalto.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/marshalto",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/gogo/protobuf/proto",
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/descriptor:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++        "@com_github_gogo_protobuf//vanity:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":marshalto",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/oneofcheck/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/oneofcheck/BUILD.bazel
+new file mode 100644
+index 0000000..ee52784
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/oneofcheck/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "oneofcheck",
++    srcs = ["oneofcheck.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/oneofcheck",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":oneofcheck",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/populate/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/populate/BUILD.bazel
+new file mode 100644
+index 0000000..e33b34e
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/populate/BUILD.bazel
+@@ -0,0 +1,21 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "populate",
++    srcs = ["populate.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/populate",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/gogo/protobuf/proto",
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/descriptor:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++        "@com_github_gogo_protobuf//vanity:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":populate",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/size/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/size/BUILD.bazel
+new file mode 100644
+index 0000000..623653b
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/size/BUILD.bazel
+@@ -0,0 +1,25 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "size",
++    srcs = [
++        "size.go",
++        "sizetest.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/size",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/gogo/protobuf/proto",
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//plugin/testgen:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/descriptor:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++        "@com_github_gogo_protobuf//vanity:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":size",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/stringer/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/stringer/BUILD.bazel
+new file mode 100644
+index 0000000..a67d4a5
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/stringer/BUILD.bazel
+@@ -0,0 +1,22 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "stringer",
++    srcs = [
++        "stringer.go",
++        "stringertest.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/stringer",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//plugin/testgen:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":stringer",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/testgen/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/testgen/BUILD.bazel
+new file mode 100644
+index 0000000..d8d86d9
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/testgen/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "testgen",
++    srcs = ["testgen.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/testgen",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":testgen",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/union/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/union/BUILD.bazel
+new file mode 100644
+index 0000000..523ae4f
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/union/BUILD.bazel
+@@ -0,0 +1,22 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "union",
++    srcs = [
++        "union.go",
++        "uniontest.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/union",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//plugin/testgen:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":union",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/plugin/unmarshal/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/plugin/unmarshal/BUILD.bazel
+new file mode 100644
+index 0000000..30bd6b4
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/plugin/unmarshal/BUILD.bazel
+@@ -0,0 +1,20 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "unmarshal",
++    srcs = ["unmarshal.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/plugin/unmarshal",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/gogo/protobuf/proto",
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/descriptor:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":unmarshal",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/proto/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/proto/BUILD.bazel
+new file mode 100644
+index 0000000..57c4512
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/proto/BUILD.bazel
+@@ -0,0 +1,40 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "proto",
++    srcs = [
++        "clone.go",
++        "decode.go",
++        "decode_gogo.go",
++        "duration.go",
++        "duration_gogo.go",
++        "encode.go",
++        "encode_gogo.go",
++        "equal.go",
++        "extensions.go",
++        "extensions_gogo.go",
++        "lib.go",
++        "lib_gogo.go",
++        "message_set.go",
++        "pointer_reflect.go",
++        "pointer_reflect_gogo.go",
++        "pointer_unsafe.go",
++        "pointer_unsafe_gogo.go",
++        "properties.go",
++        "properties_gogo.go",
++        "skip_gogo.go",
++        "text.go",
++        "text_gogo.go",
++        "text_parser.go",
++        "timestamp.go",
++        "timestamp_gogo.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/proto",
++    visibility = ["//visibility:public"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":proto",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/protoc-gen-gofast/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/protoc-gen-gofast/BUILD.bazel
+new file mode 100644
+index 0000000..6bcad6e
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/protoc-gen-gofast/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
++
++go_library(
++    name = "protoc-gen-gofast_lib",
++    srcs = ["main.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/protoc-gen-gofast",
++    visibility = ["//visibility:private"],
++    deps = [
++        "@com_github_gogo_protobuf//vanity:go_default_library",
++        "@com_github_gogo_protobuf//vanity/command:go_default_library",
++    ],
++)
++
++go_binary(
++    name = "protoc-gen-gofast",
++    embed = [":protoc-gen-gofast_lib"],
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/descriptor/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/descriptor/BUILD.bazel
+new file mode 100644
+index 0000000..e2016b9
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/descriptor/BUILD.bazel
+@@ -0,0 +1,20 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "descriptor",
++    srcs = [
++        "descriptor.go",
++        "descriptor.pb.go",
++        "descriptor_gostring.gen.go",
++        "helper.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/descriptor",
++    visibility = ["//visibility:public"],
++    deps = ["//vendor/github.com/gogo/protobuf/proto"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":descriptor",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/generator/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/generator/BUILD.bazel
+new file mode 100644
+index 0000000..9548a1d
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/generator/BUILD.bazel
+@@ -0,0 +1,23 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "generator",
++    srcs = [
++        "generator.go",
++        "helper.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/generator",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/gogo/protobuf/proto",
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/descriptor:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/plugin:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":generator",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/grpc/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/grpc/BUILD.bazel
+new file mode 100644
+index 0000000..0ee9a47
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/grpc/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "grpc",
++    srcs = ["grpc.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/grpc",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@com_github_gogo_protobuf//protoc-gen-gogo/descriptor:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":grpc",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/plugin/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/plugin/BUILD.bazel
+new file mode 100644
+index 0000000..e9e4c03
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/plugin/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "plugin",
++    srcs = ["plugin.pb.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/protoc-gen-gogo/plugin",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/gogo/protobuf/proto",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/descriptor:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":plugin",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/vanity/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/vanity/BUILD.bazel
+new file mode 100644
+index 0000000..4dbb57f
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/vanity/BUILD.bazel
+@@ -0,0 +1,25 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "vanity",
++    srcs = [
++        "enum.go",
++        "field.go",
++        "file.go",
++        "foreach.go",
++        "msg.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/vanity",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/gogo/protobuf/proto",
++        "@com_github_gogo_protobuf//gogoproto:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/descriptor:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":vanity",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/gogo/protobuf/vanity/command/BUILD.bazel b/_tools/src/github.com/gogo/protobuf/vanity/command/BUILD.bazel
+new file mode 100644
+index 0000000..5966d5a
+--- /dev/null
++++ b/_tools/src/github.com/gogo/protobuf/vanity/command/BUILD.bazel
+@@ -0,0 +1,36 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "command",
++    srcs = ["command.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/gogo/protobuf/vanity/command",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/gogo/protobuf/proto",
++        "@com_github_gogo_protobuf//plugin/compare:go_default_library",
++        "@com_github_gogo_protobuf//plugin/defaultcheck:go_default_library",
++        "@com_github_gogo_protobuf//plugin/description:go_default_library",
++        "@com_github_gogo_protobuf//plugin/embedcheck:go_default_library",
++        "@com_github_gogo_protobuf//plugin/enumstringer:go_default_library",
++        "@com_github_gogo_protobuf//plugin/equal:go_default_library",
++        "@com_github_gogo_protobuf//plugin/face:go_default_library",
++        "@com_github_gogo_protobuf//plugin/gostring:go_default_library",
++        "@com_github_gogo_protobuf//plugin/marshalto:go_default_library",
++        "@com_github_gogo_protobuf//plugin/oneofcheck:go_default_library",
++        "@com_github_gogo_protobuf//plugin/populate:go_default_library",
++        "@com_github_gogo_protobuf//plugin/size:go_default_library",
++        "@com_github_gogo_protobuf//plugin/stringer:go_default_library",
++        "@com_github_gogo_protobuf//plugin/testgen:go_default_library",
++        "@com_github_gogo_protobuf//plugin/union:go_default_library",
++        "@com_github_gogo_protobuf//plugin/unmarshal:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/generator:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/grpc:go_default_library",
++        "@com_github_gogo_protobuf//protoc-gen-gogo/plugin:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":command",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/golang/protobuf/proto/BUILD.bazel b/_tools/src/github.com/golang/protobuf/proto/BUILD.bazel
+new file mode 100644
+index 0000000..6a9335b
+--- /dev/null
++++ b/_tools/src/github.com/golang/protobuf/proto/BUILD.bazel
+@@ -0,0 +1,32 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "proto",
++    srcs = [
++        "clone.go",
++        "decode.go",
++        "deprecated.go",
++        "discard.go",
++        "encode.go",
++        "equal.go",
++        "extensions.go",
++        "lib.go",
++        "message_set.go",
++        "pointer_reflect.go",
++        "pointer_unsafe.go",
++        "properties.go",
++        "table_marshal.go",
++        "table_merge.go",
++        "table_unmarshal.go",
++        "text.go",
++        "text_parser.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/golang/protobuf/proto",
++    visibility = ["//visibility:public"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":proto",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/golang/protobuf/protoc-gen-go/BUILD.bazel b/_tools/src/github.com/golang/protobuf/protoc-gen-go/BUILD.bazel
+new file mode 100644
+index 0000000..ac06da0
+--- /dev/null
++++ b/_tools/src/github.com/golang/protobuf/protoc-gen-go/BUILD.bazel
+@@ -0,0 +1,22 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
++
++go_library(
++    name = "protoc-gen-go_lib",
++    srcs = [
++        "link_grpc.go",
++        "main.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/golang/protobuf/protoc-gen-go",
++    visibility = ["//visibility:private"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/proto",
++        "@com_github_golang_protobuf//protoc-gen-go/generator:go_default_library_gen",
++        "@com_github_golang_protobuf//protoc-gen-go/grpc:go_default_library",
++    ],
++)
++
++go_binary(
++    name = "protoc-gen-go",
++    embed = [":protoc-gen-go_lib"],
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/golang/protobuf/protoc-gen-go/descriptor/BUILD.bazel b/_tools/src/github.com/golang/protobuf/protoc-gen-go/descriptor/BUILD.bazel
+new file mode 100644
+index 0000000..bb28f94
+--- /dev/null
++++ b/_tools/src/github.com/golang/protobuf/protoc-gen-go/descriptor/BUILD.bazel
+@@ -0,0 +1,15 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "descriptor",
++    srcs = ["descriptor.pb.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/golang/protobuf/protoc-gen-go/descriptor",
++    visibility = ["//visibility:public"],
++    deps = ["//vendor/github.com/golang/protobuf/proto"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":descriptor",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/golang/protobuf/protoc-gen-go/generator/BUILD.bazel b/_tools/src/github.com/golang/protobuf/protoc-gen-go/generator/BUILD.bazel
+new file mode 100644
+index 0000000..3921cda
+--- /dev/null
++++ b/_tools/src/github.com/golang/protobuf/protoc-gen-go/generator/BUILD.bazel
+@@ -0,0 +1,20 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "generator",
++    srcs = ["generator.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/golang/protobuf/protoc-gen-go/generator",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/descriptor",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/plugin",
++        "@com_github_golang_protobuf//protoc-gen-go/generator/internal/remap:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":generator",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/golang/protobuf/protoc-gen-go/generator/internal/remap/BUILD.bazel b/_tools/src/github.com/golang/protobuf/protoc-gen-go/generator/internal/remap/BUILD.bazel
+new file mode 100644
+index 0000000..71455a6
+--- /dev/null
++++ b/_tools/src/github.com/golang/protobuf/protoc-gen-go/generator/internal/remap/BUILD.bazel
+@@ -0,0 +1,14 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "remap",
++    srcs = ["remap.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/golang/protobuf/protoc-gen-go/generator/internal/remap",
++    visibility = ["//_tools/src/github.com/golang/protobuf/protoc-gen-go/generator:__subpackages__"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":remap",
++    visibility = ["//_tools/src/github.com/golang/protobuf/protoc-gen-go/generator:__subpackages__"],
++)
+diff --git a/_tools/src/github.com/golang/protobuf/protoc-gen-go/grpc/BUILD.bazel b/_tools/src/github.com/golang/protobuf/protoc-gen-go/grpc/BUILD.bazel
+new file mode 100644
+index 0000000..2b03139
+--- /dev/null
++++ b/_tools/src/github.com/golang/protobuf/protoc-gen-go/grpc/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "grpc",
++    srcs = ["grpc.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/golang/protobuf/protoc-gen-go/grpc",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/descriptor",
++        "@com_github_golang_protobuf//protoc-gen-go/generator:go_default_library_gen",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":grpc",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/golang/protobuf/protoc-gen-go/plugin/BUILD.bazel b/_tools/src/github.com/golang/protobuf/protoc-gen-go/plugin/BUILD.bazel
+new file mode 100644
+index 0000000..2695f7a
+--- /dev/null
++++ b/_tools/src/github.com/golang/protobuf/protoc-gen-go/plugin/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "plugin",
++    srcs = ["plugin.pb.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/golang/protobuf/protoc-gen-go/plugin",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/descriptor",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":plugin",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/kisielk/errcheck/BUILD.bazel b/_tools/src/github.com/kisielk/errcheck/BUILD.bazel
+new file mode 100644
+index 0000000..a970fe0
+--- /dev/null
++++ b/_tools/src/github.com/kisielk/errcheck/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
++
++go_library(
++    name = "errcheck_lib",
++    srcs = ["main.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/kisielk/errcheck",
++    visibility = ["//visibility:private"],
++    deps = [
++        "@com_github_kisielk_errcheck//internal/errcheck:go_default_library",
++        "@com_github_kisielk_gotool//:go_default_library",
++    ],
++)
++
++go_binary(
++    name = "errcheck",
++    embed = [":errcheck_lib"],
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/kisielk/errcheck/internal/errcheck/BUILD.bazel b/_tools/src/github.com/kisielk/errcheck/internal/errcheck/BUILD.bazel
+new file mode 100644
+index 0000000..4a04056
+--- /dev/null
++++ b/_tools/src/github.com/kisielk/errcheck/internal/errcheck/BUILD.bazel
+@@ -0,0 +1,15 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "errcheck",
++    srcs = ["errcheck.go"],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/kisielk/errcheck/internal/errcheck",
++    visibility = ["//_tools/src/github.com/kisielk/errcheck:__subpackages__"],
++    deps = ["@org_golang_x_tools//go/loader:go_default_library"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":errcheck",
++    visibility = ["//_tools/src/github.com/kisielk/errcheck:__subpackages__"],
++)
+diff --git a/_tools/src/github.com/kisielk/gotool/BUILD.bazel b/_tools/src/github.com/kisielk/gotool/BUILD.bazel
+new file mode 100644
+index 0000000..cc2ff29
+--- /dev/null
++++ b/_tools/src/github.com/kisielk/gotool/BUILD.bazel
+@@ -0,0 +1,22 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "gotool",
++    srcs = [
++        "go13.go",
++        "go14-15.go",
++        "go16-18.go",
++        "match.go",
++        "match18.go",
++        "tool.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/kisielk/gotool",
++    visibility = ["//visibility:public"],
++    deps = ["@com_github_kisielk_gotool//internal/load:go_default_library"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":gotool",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/kisielk/gotool/internal/load/BUILD.bazel b/_tools/src/github.com/kisielk/gotool/internal/load/BUILD.bazel
+new file mode 100644
+index 0000000..7b77b97
+--- /dev/null
++++ b/_tools/src/github.com/kisielk/gotool/internal/load/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "load",
++    srcs = [
++        "path.go",
++        "pkg.go",
++        "search.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/kisielk/gotool/internal/load",
++    visibility = ["//_tools/src/github.com/kisielk/gotool:__subpackages__"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":load",
++    visibility = ["//_tools/src/github.com/kisielk/gotool:__subpackages__"],
++)
+diff --git a/_tools/src/github.com/twitchtv/retool/BUILD.bazel b/_tools/src/github.com/twitchtv/retool/BUILD.bazel
+new file mode 100644
+index 0000000..6ce4899
+--- /dev/null
++++ b/_tools/src/github.com/twitchtv/retool/BUILD.bazel
+@@ -0,0 +1,33 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
++
++go_library(
++    name = "retool_lib",
++    srcs = [
++        "add.go",
++        "build.go",
++        "clean.go",
++        "do.go",
++        "input.go",
++        "main.go",
++        "manifest.go",
++        "print.go",
++        "remove.go",
++        "spec.go",
++        "sync.go",
++        "tool.go",
++        "tooldir.go",
++        "upgrade.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/github.com/twitchtv/retool",
++    visibility = ["//visibility:private"],
++    deps = [
++        "//_tools/src/github.com/twitchtv/retool/vendor/github.com/Masterminds/semver",
++        "//_tools/src/github.com/twitchtv/retool/vendor/github.com/pkg/errors",
++    ],
++)
++
++go_binary(
++    name = "retool",
++    embed = [":retool_lib"],
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/twitchtv/retool/vendor/github.com/Masterminds/semver/BUILD.bazel b/_tools/src/github.com/twitchtv/retool/vendor/github.com/Masterminds/semver/BUILD.bazel
+new file mode 100644
+index 0000000..9822615
+--- /dev/null
++++ b/_tools/src/github.com/twitchtv/retool/vendor/github.com/Masterminds/semver/BUILD.bazel
+@@ -0,0 +1,20 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "semver",
++    srcs = [
++        "collection.go",
++        "constraints.go",
++        "doc.go",
++        "version.go",
++    ],
++    importmap = "github.com/twitchtv/twirp/_tools/src/github.com/twitchtv/retool/vendor/github.com/Masterminds/semver",
++    importpath = "github.com/Masterminds/semver",
++    visibility = ["//visibility:public"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":semver",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/github.com/twitchtv/retool/vendor/github.com/pkg/errors/BUILD.bazel b/_tools/src/github.com/twitchtv/retool/vendor/github.com/pkg/errors/BUILD.bazel
+new file mode 100644
+index 0000000..bc03c4a
+--- /dev/null
++++ b/_tools/src/github.com/twitchtv/retool/vendor/github.com/pkg/errors/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "errors",
++    srcs = [
++        "errors.go",
++        "stack.go",
++    ],
++    importmap = "github.com/twitchtv/twirp/_tools/src/github.com/twitchtv/retool/vendor/github.com/pkg/errors",
++    importpath = "github.com/pkg/errors",
++    visibility = ["//visibility:public"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":errors",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/golang.org/x/tools/go/ast/astutil/BUILD.bazel b/_tools/src/golang.org/x/tools/go/ast/astutil/BUILD.bazel
+new file mode 100644
+index 0000000..0907be2
+--- /dev/null
++++ b/_tools/src/golang.org/x/tools/go/ast/astutil/BUILD.bazel
+@@ -0,0 +1,19 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "astutil",
++    srcs = [
++        "enclosing.go",
++        "imports.go",
++        "rewrite.go",
++        "util.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/golang.org/x/tools/go/ast/astutil",
++    visibility = ["//visibility:public"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":astutil",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/golang.org/x/tools/go/buildutil/BUILD.bazel b/_tools/src/golang.org/x/tools/go/buildutil/BUILD.bazel
+new file mode 100644
+index 0000000..138abb8
+--- /dev/null
++++ b/_tools/src/golang.org/x/tools/go/buildutil/BUILD.bazel
+@@ -0,0 +1,20 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "buildutil",
++    srcs = [
++        "allpackages.go",
++        "fakecontext.go",
++        "overlay.go",
++        "tags.go",
++        "util.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/golang.org/x/tools/go/buildutil",
++    visibility = ["//visibility:public"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":buildutil",
++    visibility = ["//visibility:public"],
++)
+diff --git a/_tools/src/golang.org/x/tools/go/internal/cgo/BUILD.bazel b/_tools/src/golang.org/x/tools/go/internal/cgo/BUILD.bazel
+new file mode 100644
+index 0000000..1f33a69
+--- /dev/null
++++ b/_tools/src/golang.org/x/tools/go/internal/cgo/BUILD.bazel
+@@ -0,0 +1,17 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "cgo",
++    srcs = [
++        "cgo.go",
++        "cgo_pkgconfig.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/golang.org/x/tools/go/internal/cgo",
++    visibility = ["//_tools/src/golang.org/x/tools/go:__subpackages__"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":cgo",
++    visibility = ["//_tools/src/golang.org/x/tools/go:__subpackages__"],
++)
+diff --git a/_tools/src/golang.org/x/tools/go/loader/BUILD.bazel b/_tools/src/golang.org/x/tools/go/loader/BUILD.bazel
+new file mode 100644
+index 0000000..d9783a3
+--- /dev/null
++++ b/_tools/src/golang.org/x/tools/go/loader/BUILD.bazel
+@@ -0,0 +1,23 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "loader",
++    srcs = [
++        "doc.go",
++        "loader.go",
++        "util.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/_tools/src/golang.org/x/tools/go/loader",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@org_golang_x_tools//go/ast/astutil:go_default_library",
++        "@org_golang_x_tools//go/buildutil:go_default_library",
++        "@org_golang_x_tools//go/internal/cgo:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":loader",
++    visibility = ["//visibility:public"],
++)
+diff --git a/clientcompat/BUILD.bazel b/clientcompat/BUILD.bazel
+new file mode 100644
+index 0000000..3f8cb8d
+--- /dev/null
++++ b/clientcompat/BUILD.bazel
+@@ -0,0 +1,25 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
++
++go_library(
++    name = "clientcompat_lib",
++    srcs = [
++        "clientcompat.go",
++        "gen.go",
++        "main.go",
++        "run.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/clientcompat",
++    visibility = ["//visibility:private"],
++    deps = [
++        "//:twirp",
++        "//clientcompat/internal/clientcompat",
++        "//vendor/github.com/gogo/protobuf/proto",
++        "//vendor/github.com/pkg/errors",
++    ],
++)
++
++go_binary(
++    name = "clientcompat",
++    embed = [":clientcompat_lib"],
++    visibility = ["//visibility:public"],
++)
+diff --git a/clientcompat/gocompat/BUILD.bazel b/clientcompat/gocompat/BUILD.bazel
+new file mode 100644
+index 0000000..3eb74d0
+--- /dev/null
++++ b/clientcompat/gocompat/BUILD.bazel
+@@ -0,0 +1,19 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
++
++go_library(
++    name = "gocompat_lib",
++    srcs = ["gocompat.go"],
++    importpath = "github.com/twitchtv/twirp/clientcompat/gocompat",
++    visibility = ["//visibility:private"],
++    deps = [
++        "//:twirp",
++        "//clientcompat/internal/clientcompat",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++go_binary(
++    name = "gocompat",
++    embed = [":gocompat_lib"],
++    visibility = ["//visibility:public"],
++)
+diff --git a/clientcompat/internal/clientcompat/BUILD.bazel b/clientcompat/internal/clientcompat/BUILD.bazel
+new file mode 100644
+index 0000000..5ad407f
+--- /dev/null
++++ b/clientcompat/internal/clientcompat/BUILD.bazel
+@@ -0,0 +1,23 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "clientcompat",
++    srcs = [
++        "clientcompat.pb.go",
++        "clientcompat.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/clientcompat/internal/clientcompat",
++    visibility = ["//clientcompat:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":clientcompat",
++    visibility = ["//clientcompat:__subpackages__"],
++)
+diff --git a/ctxsetters/BUILD.bazel b/ctxsetters/BUILD.bazel
+new file mode 100644
+index 0000000..5c6a400
+--- /dev/null
++++ b/ctxsetters/BUILD.bazel
+@@ -0,0 +1,15 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "ctxsetters",
++    srcs = ["ctxsetters.go"],
++    importpath = "github.com/twitchtv/twirp/ctxsetters",
++    visibility = ["//visibility:public"],
++    deps = ["//internal/contextkeys"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":ctxsetters",
++    visibility = ["//visibility:public"],
++)
+diff --git a/example/BUILD.bazel b/example/BUILD.bazel
+new file mode 100644
+index 0000000..6625a3a
+--- /dev/null
++++ b/example/BUILD.bazel
+@@ -0,0 +1,24 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "example",
++    srcs = [
++        "gen.go",
++        "service.pb.go",
++        "service.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/example",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":example",
++    visibility = ["//visibility:public"],
++)
+diff --git a/example/cmd/client/BUILD.bazel b/example/cmd/client/BUILD.bazel
+new file mode 100644
+index 0000000..2109adf
+--- /dev/null
++++ b/example/cmd/client/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
++
++go_library(
++    name = "client_lib",
++    srcs = ["main.go"],
++    importpath = "github.com/twitchtv/twirp/example/cmd/client",
++    visibility = ["//visibility:private"],
++    deps = [
++        "//:twirp",
++        "//example",
++    ],
++)
++
++go_binary(
++    name = "client",
++    embed = [":client_lib"],
++    visibility = ["//visibility:public"],
++)
+diff --git a/example/cmd/server/BUILD.bazel b/example/cmd/server/BUILD.bazel
+new file mode 100644
+index 0000000..089f3e6
+--- /dev/null
++++ b/example/cmd/server/BUILD.bazel
+@@ -0,0 +1,22 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
++
++go_library(
++    name = "server_lib",
++    srcs = [
++        "main.go",
++        "statter.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/example/cmd/server",
++    visibility = ["//visibility:private"],
++    deps = [
++        "//:twirp",
++        "//example",
++        "//hooks/statsd",
++    ],
++)
++
++go_binary(
++    name = "server",
++    embed = [":server_lib"],
++    visibility = ["//visibility:public"],
++)
+diff --git a/hooks/statsd/BUILD.bazel b/hooks/statsd/BUILD.bazel
+new file mode 100644
+index 0000000..b08f35d
+--- /dev/null
++++ b/hooks/statsd/BUILD.bazel
+@@ -0,0 +1,25 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "statsd",
++    srcs = ["statsd.go"],
++    importpath = "github.com/twitchtv/twirp/hooks/statsd",
++    visibility = ["//visibility:public"],
++    deps = ["//:twirp"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":statsd",
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "statsd_test",
++    srcs = ["statsd_test.go"],
++    embed = [":statsd"],
++    deps = [
++        "//:twirp",
++        "//internal/twirptest",
++    ],
++)
+diff --git a/internal/contextkeys/BUILD.bazel b/internal/contextkeys/BUILD.bazel
+new file mode 100644
+index 0000000..27c96b7
+--- /dev/null
++++ b/internal/contextkeys/BUILD.bazel
+@@ -0,0 +1,14 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "contextkeys",
++    srcs = ["keys.go"],
++    importpath = "github.com/twitchtv/twirp/internal/contextkeys",
++    visibility = ["//:__subpackages__"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":contextkeys",
++    visibility = ["//:__subpackages__"],
++)
+diff --git a/internal/descriptors/BUILD.bazel b/internal/descriptors/BUILD.bazel
+new file mode 100644
+index 0000000..94ef425
+--- /dev/null
++++ b/internal/descriptors/BUILD.bazel
+@@ -0,0 +1,19 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "descriptors",
++    srcs = ["descriptors.go"],
++    importpath = "github.com/twitchtv/twirp/internal/descriptors",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/descriptor",
++        "//vendor/github.com/pkg/errors",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":descriptors",
++    visibility = ["//:__subpackages__"],
++)
+diff --git a/internal/gen/BUILD.bazel b/internal/gen/BUILD.bazel
+new file mode 100644
+index 0000000..0f38a2a
+--- /dev/null
++++ b/internal/gen/BUILD.bazel
+@@ -0,0 +1,25 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "gen",
++    srcs = [
++        "logging.go",
++        "main.go",
++        "version.go",
++        "wrappers.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/gen",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//internal/gen/stringutils",
++        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/descriptor",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/plugin",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":gen",
++    visibility = ["//:__subpackages__"],
++)
+diff --git a/internal/gen/stringutils/BUILD.bazel b/internal/gen/stringutils/BUILD.bazel
+new file mode 100644
+index 0000000..190c263
+--- /dev/null
++++ b/internal/gen/stringutils/BUILD.bazel
+@@ -0,0 +1,14 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "stringutils",
++    srcs = ["stringutils.go"],
++    importpath = "github.com/twitchtv/twirp/internal/gen/stringutils",
++    visibility = ["//:__subpackages__"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":stringutils",
++    visibility = ["//:__subpackages__"],
++)
+diff --git a/internal/gen/typemap/BUILD.bazel b/internal/gen/typemap/BUILD.bazel
+new file mode 100644
+index 0000000..e329fb6
+--- /dev/null
++++ b/internal/gen/typemap/BUILD.bazel
+@@ -0,0 +1,30 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "typemap",
++    srcs = ["typemap.go"],
++    importpath = "github.com/twitchtv/twirp/internal/gen/typemap",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/descriptor",
++        "//vendor/github.com/pkg/errors",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":typemap",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "typemap_test",
++    srcs = ["typemap_test.go"],
++    embed = [":typemap"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/descriptor",
++        "//vendor/github.com/stretchr/testify/assert",
++        "//vendor/github.com/stretchr/testify/require",
++    ],
++)
+diff --git a/internal/gen/typemap/testdata/BUILD.bazel b/internal/gen/typemap/testdata/BUILD.bazel
+new file mode 100644
+index 0000000..52f8309
+--- /dev/null
++++ b/internal/gen/typemap/testdata/BUILD.bazel
+@@ -0,0 +1,14 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "testdata",
++    srcs = ["gen.go"],
++    importpath = "github.com/twitchtv/twirp/internal/gen/typemap/testdata",
++    visibility = ["//:__subpackages__"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":testdata",
++    visibility = ["//:__subpackages__"],
++)
+diff --git a/internal/twirptest/BUILD.bazel b/internal/twirptest/BUILD.bazel
+new file mode 100644
+index 0000000..fde8e7c
+--- /dev/null
++++ b/internal/twirptest/BUILD.bazel
+@@ -0,0 +1,43 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "twirptest",
++    srcs = [
++        "doc.go",
++        "gen.go",
++        "hatmakers.go",
++        "service.pb.go",
++        "service.twirp.go",
++        "testlogging.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":twirptest",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "twirptest_test",
++    srcs = [
++        "client_1_13_test.go",
++        "client_test.go",
++        "service_test.go",
++    ],
++    embed = [":twirptest"],
++    deps = [
++        "//:twirp",
++        "//internal/descriptors",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/pkg/errors",
++    ],
++)
+diff --git a/internal/twirptest/empty_service/BUILD.bazel b/internal/twirptest/empty_service/BUILD.bazel
+new file mode 100644
+index 0000000..226c915
+--- /dev/null
++++ b/internal/twirptest/empty_service/BUILD.bazel
+@@ -0,0 +1,30 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "empty_service",
++    srcs = [
++        "empty_service.pb.go",
++        "empty_service.twirp.go",
++        "gen.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/empty_service",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":empty_service",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "empty_service_test",
++    srcs = ["empty_service_test.go"],
++    embed = [":empty_service"],
++)
+diff --git a/internal/twirptest/gogo_compat/BUILD.bazel b/internal/twirptest/gogo_compat/BUILD.bazel
+new file mode 100644
+index 0000000..8e3165c
+--- /dev/null
++++ b/internal/twirptest/gogo_compat/BUILD.bazel
+@@ -0,0 +1,31 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "gogo_compat",
++    srcs = [
++        "gen.go",
++        "service.pb.go",
++        "service.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/gogo_compat",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":gogo_compat",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "gogo_compat_test",
++    srcs = ["gogo_compat_test.go"],
++    embed = [":gogo_compat"],
++    deps = ["//internal/descriptors"],
++)
+diff --git a/internal/twirptest/google_protobuf_imports/BUILD.bazel b/internal/twirptest/google_protobuf_imports/BUILD.bazel
+new file mode 100644
+index 0000000..cc34fc9
+--- /dev/null
++++ b/internal/twirptest/google_protobuf_imports/BUILD.bazel
+@@ -0,0 +1,26 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "google_protobuf_imports",
++    srcs = [
++        "gen.go",
++        "service.pb.go",
++        "service.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/google_protobuf_imports",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/ptypes/empty",
++        "//vendor/github.com/golang/protobuf/ptypes/wrappers",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":google_protobuf_imports",
++    visibility = ["//:__subpackages__"],
++)
+diff --git a/internal/twirptest/importable/BUILD.bazel b/internal/twirptest/importable/BUILD.bazel
+new file mode 100644
+index 0000000..6d1670a
+--- /dev/null
++++ b/internal/twirptest/importable/BUILD.bazel
+@@ -0,0 +1,24 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "importable",
++    srcs = [
++        "gen.go",
++        "importable.pb.go",
++        "importable.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/importable",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":importable",
++    visibility = ["//:__subpackages__"],
++)
+diff --git a/internal/twirptest/importer/BUILD.bazel b/internal/twirptest/importer/BUILD.bazel
+new file mode 100644
+index 0000000..4520511
+--- /dev/null
++++ b/internal/twirptest/importer/BUILD.bazel
+@@ -0,0 +1,31 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "importer",
++    srcs = [
++        "gen.go",
++        "importer.pb.go",
++        "importer.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/importer",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//internal/twirptest/importable",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":importer",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "importer_test",
++    srcs = ["importer_test.go"],
++    embed = [":importer"],
++)
+diff --git a/internal/twirptest/importer_local/BUILD.bazel b/internal/twirptest/importer_local/BUILD.bazel
+new file mode 100644
+index 0000000..9059cbe
+--- /dev/null
++++ b/internal/twirptest/importer_local/BUILD.bazel
+@@ -0,0 +1,31 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "importer_local",
++    srcs = [
++        "gen.go",
++        "importer_local.pb.go",
++        "importer_local.twirp.go",
++        "importer_local_msgdef.pb.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/importer_local",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":importer_local",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "importer_local_test",
++    srcs = ["importer_local_test.go"],
++    embed = [":importer_local"],
++)
+diff --git a/internal/twirptest/importmapping/BUILD.bazel b/internal/twirptest/importmapping/BUILD.bazel
+new file mode 100644
+index 0000000..22e9516
+--- /dev/null
++++ b/internal/twirptest/importmapping/BUILD.bazel
+@@ -0,0 +1,20 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "importmapping",
++    srcs = ["gen.go"],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/importmapping",
++    visibility = ["//:__subpackages__"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":importmapping",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "importmapping_test",
++    srcs = ["importmapping_test.go"],
++    embed = [":importmapping"],
++)
+diff --git a/internal/twirptest/importmapping/x/BUILD.bazel b/internal/twirptest/importmapping/x/BUILD.bazel
+new file mode 100644
+index 0000000..67d1631
+--- /dev/null
++++ b/internal/twirptest/importmapping/x/BUILD.bazel
+@@ -0,0 +1,24 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "x",
++    srcs = [
++        "x.pb.go",
++        "x.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/importmapping/x",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//internal/twirptest/importmapping/y",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":x",
++    visibility = ["//:__subpackages__"],
++)
+diff --git a/internal/twirptest/importmapping/y/BUILD.bazel b/internal/twirptest/importmapping/y/BUILD.bazel
+new file mode 100644
+index 0000000..16eaedf
+--- /dev/null
++++ b/internal/twirptest/importmapping/y/BUILD.bazel
+@@ -0,0 +1,15 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "y",
++    srcs = ["y.pb.go"],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/importmapping/y",
++    visibility = ["//:__subpackages__"],
++    deps = ["//vendor/github.com/golang/protobuf/proto"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":y",
++    visibility = ["//:__subpackages__"],
++)
+diff --git a/internal/twirptest/json_serialization/BUILD.bazel b/internal/twirptest/json_serialization/BUILD.bazel
+new file mode 100644
+index 0000000..b21eaee
+--- /dev/null
++++ b/internal/twirptest/json_serialization/BUILD.bazel
+@@ -0,0 +1,31 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "json_serialization",
++    srcs = [
++        "gen.go",
++        "json_serialization.pb.go",
++        "json_serialization.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/json_serialization",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":json_serialization",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "json_serialization_test",
++    srcs = ["json_serialization_test.go"],
++    embed = [":json_serialization"],
++    deps = ["//:twirp"],
++)
+diff --git a/internal/twirptest/multiple/BUILD.bazel b/internal/twirptest/multiple/BUILD.bazel
+new file mode 100644
+index 0000000..bd15596
+--- /dev/null
++++ b/internal/twirptest/multiple/BUILD.bazel
+@@ -0,0 +1,32 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "multiple",
++    srcs = [
++        "gen.go",
++        "multiple1.pb.go",
++        "multiple1.twirp.go",
++        "multiple2.pb.go",
++        "multiple2.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/multiple",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":multiple",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "multiple_test",
++    srcs = ["multiple_test.go"],
++    embed = [":multiple"],
++)
+diff --git a/internal/twirptest/no_package_name/BUILD.bazel b/internal/twirptest/no_package_name/BUILD.bazel
+new file mode 100644
+index 0000000..4eb226c
+--- /dev/null
++++ b/internal/twirptest/no_package_name/BUILD.bazel
+@@ -0,0 +1,24 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "no_package_name",
++    srcs = [
++        "gen.go",
++        "no_package_name.pb.go",
++        "no_package_name.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/no_package_name",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":no_package_name",
++    visibility = ["//:__subpackages__"],
++)
+diff --git a/internal/twirptest/no_package_name_importer/BUILD.bazel b/internal/twirptest/no_package_name_importer/BUILD.bazel
+new file mode 100644
+index 0000000..0582cdc
+--- /dev/null
++++ b/internal/twirptest/no_package_name_importer/BUILD.bazel
+@@ -0,0 +1,31 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "no_package_name_importer",
++    srcs = [
++        "gen.go",
++        "no_package_name_importer.pb.go",
++        "no_package_name_importer.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/no_package_name_importer",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//internal/twirptest/no_package_name",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":no_package_name_importer",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "no_package_name_importer_test",
++    srcs = ["compile_test.go"],
++    embed = [":no_package_name_importer"],
++)
+diff --git a/internal/twirptest/proto/BUILD.bazel b/internal/twirptest/proto/BUILD.bazel
+new file mode 100644
+index 0000000..ce8587c
+--- /dev/null
++++ b/internal/twirptest/proto/BUILD.bazel
+@@ -0,0 +1,30 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "proto",
++    srcs = [
++        "gen.go",
++        "proto.pb.go",
++        "proto.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/proto",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":proto",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "proto_test",
++    srcs = ["proto_test.go"],
++    embed = [":proto"],
++)
+diff --git a/internal/twirptest/service_method_same_name/BUILD.bazel b/internal/twirptest/service_method_same_name/BUILD.bazel
+new file mode 100644
+index 0000000..d49fa63
+--- /dev/null
++++ b/internal/twirptest/service_method_same_name/BUILD.bazel
+@@ -0,0 +1,30 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "service_method_same_name",
++    srcs = [
++        "gen.go",
++        "service_method_same_name.pb.go",
++        "service_method_same_name.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/service_method_same_name",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":service_method_same_name",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "service_method_same_name_test",
++    srcs = ["compile_test.go"],
++    embed = [":service_method_same_name"],
++)
+diff --git a/internal/twirptest/snake_case_names/BUILD.bazel b/internal/twirptest/snake_case_names/BUILD.bazel
+new file mode 100644
+index 0000000..3ee1e0d
+--- /dev/null
++++ b/internal/twirptest/snake_case_names/BUILD.bazel
+@@ -0,0 +1,34 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "snake_case_names",
++    srcs = [
++        "gen.go",
++        "snake_case_names.pb.go",
++        "snake_case_names.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/snake_case_names",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":snake_case_names",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "snake_case_names_test",
++    srcs = [
++        "compatibility_test.go",
++        "compile_test.go",
++    ],
++    embed = [":snake_case_names"],
++    deps = ["//:twirp"],
++)
+diff --git a/internal/twirptest/source_relative/BUILD.bazel b/internal/twirptest/source_relative/BUILD.bazel
+new file mode 100644
+index 0000000..6f5daa7
+--- /dev/null
++++ b/internal/twirptest/source_relative/BUILD.bazel
+@@ -0,0 +1,30 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "source_relative",
++    srcs = [
++        "gen.go",
++        "source_relative.pb.go",
++        "source_relative.twirp.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/internal/twirptest/source_relative",
++    visibility = ["//:__subpackages__"],
++    deps = [
++        "//:twirp",
++        "//ctxsetters",
++        "//vendor/github.com/golang/protobuf/jsonpb",
++        "//vendor/github.com/golang/protobuf/proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":source_relative",
++    visibility = ["//:__subpackages__"],
++)
++
++go_test(
++    name = "source_relative_test",
++    srcs = ["compile_test.go"],
++    embed = [":source_relative"],
++)
+diff --git a/protoc-gen-twirp/BUILD.bazel b/protoc-gen-twirp/BUILD.bazel
+new file mode 100644
+index 0000000..e4d2d14
+--- /dev/null
++++ b/protoc-gen-twirp/BUILD.bazel
+@@ -0,0 +1,42 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
++
++go_library(
++    name = "protoc-gen-twirp_lib",
++    srcs = [
++        "command_line.go",
++        "generator.go",
++        "go_naming.go",
++        "main.go",
++    ],
++    importpath = "github.com/twitchtv/twirp/protoc-gen-twirp",
++    visibility = ["//visibility:private"],
++    deps = [
++        "//internal/gen",
++        "//internal/gen/stringutils",
++        "//internal/gen/typemap",
++        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/descriptor",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/plugin",
++        "//vendor/github.com/pkg/errors",
++    ],
++)
++
++go_binary(
++    name = "protoc-gen-twirp",
++    embed = [":protoc-gen-twirp_lib"],
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "protoc-gen-twirp_test",
++    srcs = [
++        "command_line_test.go",
++        "generator_test.go",
++        "go_naming_test.go",
++    ],
++    embed = [":protoc-gen-twirp_lib"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/plugin",
++    ],
++)
+diff --git a/protoc-gen-twirp_python/BUILD.bazel b/protoc-gen-twirp_python/BUILD.bazel
+new file mode 100644
+index 0000000..359e1d4
+--- /dev/null
++++ b/protoc-gen-twirp_python/BUILD.bazel
+@@ -0,0 +1,22 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
++
++go_library(
++    name = "protoc-gen-twirp_python_lib",
++    srcs = ["main.go"],
++    importpath = "github.com/twitchtv/twirp/protoc-gen-twirp_python",
++    visibility = ["//visibility:private"],
++    deps = [
++        "//internal/gen",
++        "//internal/gen/stringutils",
++        "//internal/gen/typemap",
++        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/descriptor",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/plugin",
++    ],
++)
++
++go_binary(
++    name = "protoc-gen-twirp_python",
++    embed = [":protoc-gen-twirp_python_lib"],
++    visibility = ["//visibility:public"],
++)
+diff --git a/vendor/github.com/davecgh/go-spew/spew/BUILD.bazel b/vendor/github.com/davecgh/go-spew/spew/BUILD.bazel
+new file mode 100644
+index 0000000..eabf613
+--- /dev/null
++++ b/vendor/github.com/davecgh/go-spew/spew/BUILD.bazel
+@@ -0,0 +1,39 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "spew",
++    srcs = [
++        "bypass.go",
++        "bypasssafe.go",
++        "common.go",
++        "config.go",
++        "doc.go",
++        "dump.go",
++        "format.go",
++        "spew.go",
++    ],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/davecgh/go-spew/spew",
++    importpath = "github.com/davecgh/go-spew/spew",
++    visibility = ["//visibility:public"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":spew",
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "spew_test",
++    srcs = [
++        "common_test.go",
++        "dump_test.go",
++        "dumpnocgo_test.go",
++        "example_test.go",
++        "format_test.go",
++        "internal_test.go",
++        "internalunsafe_test.go",
++        "spew_test.go",
++    ],
++    embed = [":spew"],
++)
+diff --git a/vendor/github.com/gogo/protobuf/proto/BUILD.bazel b/vendor/github.com/gogo/protobuf/proto/BUILD.bazel
+new file mode 100644
+index 0000000..d7657f0
+--- /dev/null
++++ b/vendor/github.com/gogo/protobuf/proto/BUILD.bazel
+@@ -0,0 +1,67 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "proto",
++    srcs = [
++        "clone.go",
++        "decode.go",
++        "decode_gogo.go",
++        "duration.go",
++        "duration_gogo.go",
++        "encode.go",
++        "encode_gogo.go",
++        "equal.go",
++        "extensions.go",
++        "extensions_gogo.go",
++        "lib.go",
++        "lib_gogo.go",
++        "message_set.go",
++        "pointer_reflect.go",
++        "pointer_reflect_gogo.go",
++        "pointer_unsafe.go",
++        "pointer_unsafe_gogo.go",
++        "properties.go",
++        "properties_gogo.go",
++        "skip_gogo.go",
++        "text.go",
++        "text_gogo.go",
++        "text_parser.go",
++        "timestamp.go",
++        "timestamp_gogo.go",
++    ],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/gogo/protobuf/proto",
++    importpath = "github.com/gogo/protobuf/proto",
++    visibility = ["//visibility:public"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":proto",
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "proto_test",
++    srcs = [
++        "all_test.go",
++        "any_test.go",
++        "clone_test.go",
++        "decode_test.go",
++        "encode_test.go",
++        "equal_test.go",
++        "extensions_test.go",
++        "map_test.go",
++        "message_set_test.go",
++        "proto3_test.go",
++        "size2_test.go",
++        "size_test.go",
++        "text_parser_test.go",
++        "text_test.go",
++    ],
++    embed = [":proto"],
++    deps = [
++        "@com_github_gogo_protobuf//proto/proto3_proto:go_default_library",
++        "@com_github_gogo_protobuf//proto/testdata:go_default_library",
++        "@com_github_gogo_protobuf//types:go_default_library",
++    ],
++)
+diff --git a/vendor/github.com/golang/protobuf/jsonpb/BUILD.bazel b/vendor/github.com/golang/protobuf/jsonpb/BUILD.bazel
+new file mode 100644
+index 0000000..3928d21
+--- /dev/null
++++ b/vendor/github.com/golang/protobuf/jsonpb/BUILD.bazel
+@@ -0,0 +1,34 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "jsonpb",
++    srcs = ["jsonpb.go"],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/golang/protobuf/jsonpb",
++    importpath = "github.com/golang/protobuf/jsonpb",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/ptypes/struct",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":jsonpb",
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "jsonpb_test",
++    srcs = ["jsonpb_test.go"],
++    embed = [":jsonpb"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/ptypes",
++        "//vendor/github.com/golang/protobuf/ptypes/struct",
++        "//vendor/github.com/golang/protobuf/ptypes/wrappers",
++        "@io_bazel_rules_go//proto/wkt:any_go_proto",
++        "@io_bazel_rules_go//proto/wkt:duration_go_proto",
++        "@io_bazel_rules_go//proto/wkt:timestamp_go_proto",
++    ],
++)
+diff --git a/vendor/github.com/golang/protobuf/proto/BUILD.bazel b/vendor/github.com/golang/protobuf/proto/BUILD.bazel
+new file mode 100644
+index 0000000..2f124bd
+--- /dev/null
++++ b/vendor/github.com/golang/protobuf/proto/BUILD.bazel
+@@ -0,0 +1,60 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "proto",
++    srcs = [
++        "clone.go",
++        "decode.go",
++        "deprecated.go",
++        "discard.go",
++        "encode.go",
++        "equal.go",
++        "extensions.go",
++        "lib.go",
++        "message_set.go",
++        "pointer_reflect.go",
++        "pointer_unsafe.go",
++        "properties.go",
++        "table_marshal.go",
++        "table_merge.go",
++        "table_unmarshal.go",
++        "text.go",
++        "text_parser.go",
++    ],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/golang/protobuf/proto",
++    importpath = "github.com/golang/protobuf/proto",
++    visibility = ["//visibility:public"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":proto",
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "proto_test",
++    srcs = [
++        "all_test.go",
++        "any_test.go",
++        "clone_test.go",
++        "decode_test.go",
++        "discard_test.go",
++        "encode_test.go",
++        "equal_test.go",
++        "extensions_test.go",
++        "map_test.go",
++        "message_set_test.go",
++        "proto3_test.go",
++        "size2_test.go",
++        "size_test.go",
++        "text_parser_test.go",
++        "text_test.go",
++    ],
++    embed = [":proto"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/ptypes",
++        "@io_bazel_rules_go//proto/wkt:any_go_proto",
++        "@org_golang_x_sync//errgroup:go_default_library",
++    ],
++)
+diff --git a/vendor/github.com/golang/protobuf/protoc-gen-go/BUILD.bazel b/vendor/github.com/golang/protobuf/protoc-gen-go/BUILD.bazel
+new file mode 100644
+index 0000000..9180d6c
+--- /dev/null
++++ b/vendor/github.com/golang/protobuf/protoc-gen-go/BUILD.bazel
+@@ -0,0 +1,29 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
++
++go_library(
++    name = "protoc-gen-go_lib",
++    srcs = [
++        "link_grpc.go",
++        "main.go",
++    ],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/golang/protobuf/protoc-gen-go",
++    importpath = "github.com/golang/protobuf/protoc-gen-go",
++    visibility = ["//visibility:private"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/proto",
++        "@com_github_golang_protobuf//protoc-gen-go/generator:go_default_library_gen",
++        "@com_github_golang_protobuf//protoc-gen-go/grpc:go_default_library",
++    ],
++)
++
++go_binary(
++    name = "protoc-gen-go",
++    embed = [":protoc-gen-go_lib"],
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "protoc-gen-go_test",
++    srcs = ["golden_test.go"],
++    embed = [":protoc-gen-go_lib"],
++)
+diff --git a/vendor/github.com/golang/protobuf/protoc-gen-go/descriptor/BUILD.bazel b/vendor/github.com/golang/protobuf/protoc-gen-go/descriptor/BUILD.bazel
+new file mode 100644
+index 0000000..6ac5b2e
+--- /dev/null
++++ b/vendor/github.com/golang/protobuf/protoc-gen-go/descriptor/BUILD.bazel
+@@ -0,0 +1,16 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "descriptor",
++    srcs = ["descriptor.pb.go"],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/golang/protobuf/protoc-gen-go/descriptor",
++    importpath = "github.com/golang/protobuf/protoc-gen-go/descriptor",
++    visibility = ["//visibility:public"],
++    deps = ["//vendor/github.com/golang/protobuf/proto"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":descriptor",
++    visibility = ["//visibility:public"],
++)
+diff --git a/vendor/github.com/golang/protobuf/protoc-gen-go/plugin/BUILD.bazel b/vendor/github.com/golang/protobuf/protoc-gen-go/plugin/BUILD.bazel
+new file mode 100644
+index 0000000..ffde6b3
+--- /dev/null
++++ b/vendor/github.com/golang/protobuf/protoc-gen-go/plugin/BUILD.bazel
+@@ -0,0 +1,19 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "plugin",
++    srcs = ["plugin.pb.go"],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/golang/protobuf/protoc-gen-go/plugin",
++    importpath = "github.com/golang/protobuf/protoc-gen-go/plugin",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/descriptor",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":plugin",
++    visibility = ["//visibility:public"],
++)
+diff --git a/vendor/github.com/golang/protobuf/ptypes/BUILD.bazel b/vendor/github.com/golang/protobuf/ptypes/BUILD.bazel
+new file mode 100644
+index 0000000..472e404
+--- /dev/null
++++ b/vendor/github.com/golang/protobuf/ptypes/BUILD.bazel
+@@ -0,0 +1,43 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "ptypes",
++    srcs = [
++        "any.go",
++        "doc.go",
++        "duration.go",
++        "timestamp.go",
++    ],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/golang/protobuf/ptypes",
++    importpath = "github.com/golang/protobuf/ptypes",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/proto",
++        "@io_bazel_rules_go//proto/wkt:any_go_proto",
++        "@io_bazel_rules_go//proto/wkt:duration_go_proto",
++        "@io_bazel_rules_go//proto/wkt:timestamp_go_proto",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":ptypes",
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "ptypes_test",
++    srcs = [
++        "any_test.go",
++        "duration_test.go",
++        "timestamp_test.go",
++    ],
++    embed = [":ptypes"],
++    deps = [
++        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/descriptor",
++        "@io_bazel_rules_go//proto/wkt:any_go_proto",
++        "@io_bazel_rules_go//proto/wkt:duration_go_proto",
++        "@io_bazel_rules_go//proto/wkt:timestamp_go_proto",
++    ],
++)
+diff --git a/vendor/github.com/golang/protobuf/ptypes/empty/BUILD.bazel b/vendor/github.com/golang/protobuf/ptypes/empty/BUILD.bazel
+new file mode 100644
+index 0000000..17eeb14
+--- /dev/null
++++ b/vendor/github.com/golang/protobuf/ptypes/empty/BUILD.bazel
+@@ -0,0 +1,16 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "empty",
++    srcs = ["empty.pb.go"],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/golang/protobuf/ptypes/empty",
++    importpath = "github.com/golang/protobuf/ptypes/empty",
++    visibility = ["//visibility:public"],
++    deps = ["//vendor/github.com/golang/protobuf/proto"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":empty",
++    visibility = ["//visibility:public"],
++)
+diff --git a/vendor/github.com/golang/protobuf/ptypes/struct/BUILD.bazel b/vendor/github.com/golang/protobuf/ptypes/struct/BUILD.bazel
+new file mode 100644
+index 0000000..f5ffb7f
+--- /dev/null
++++ b/vendor/github.com/golang/protobuf/ptypes/struct/BUILD.bazel
+@@ -0,0 +1,16 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "struct",
++    srcs = ["struct.pb.go"],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/golang/protobuf/ptypes/struct",
++    importpath = "github.com/golang/protobuf/ptypes/struct",
++    visibility = ["//visibility:public"],
++    deps = ["//vendor/github.com/golang/protobuf/proto"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":struct",
++    visibility = ["//visibility:public"],
++)
+diff --git a/vendor/github.com/golang/protobuf/ptypes/wrappers/BUILD.bazel b/vendor/github.com/golang/protobuf/ptypes/wrappers/BUILD.bazel
+new file mode 100644
+index 0000000..98db3df
+--- /dev/null
++++ b/vendor/github.com/golang/protobuf/ptypes/wrappers/BUILD.bazel
+@@ -0,0 +1,16 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "wrappers",
++    srcs = ["wrappers.pb.go"],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/golang/protobuf/ptypes/wrappers",
++    importpath = "github.com/golang/protobuf/ptypes/wrappers",
++    visibility = ["//visibility:public"],
++    deps = ["//vendor/github.com/golang/protobuf/proto"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":wrappers",
++    visibility = ["//visibility:public"],
++)
+diff --git a/vendor/github.com/pkg/errors/BUILD.bazel b/vendor/github.com/pkg/errors/BUILD.bazel
+new file mode 100644
+index 0000000..effd8d8
+--- /dev/null
++++ b/vendor/github.com/pkg/errors/BUILD.bazel
+@@ -0,0 +1,30 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "errors",
++    srcs = [
++        "errors.go",
++        "stack.go",
++    ],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/pkg/errors",
++    importpath = "github.com/pkg/errors",
++    visibility = ["//visibility:public"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":errors",
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "errors_test",
++    srcs = [
++        "bench_test.go",
++        "errors_test.go",
++        "example_test.go",
++        "format_test.go",
++        "stack_test.go",
++    ],
++    embed = [":errors"],
++)
+diff --git a/vendor/github.com/pmezard/go-difflib/difflib/BUILD.bazel b/vendor/github.com/pmezard/go-difflib/difflib/BUILD.bazel
+new file mode 100644
+index 0000000..93cc744
+--- /dev/null
++++ b/vendor/github.com/pmezard/go-difflib/difflib/BUILD.bazel
+@@ -0,0 +1,21 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "difflib",
++    srcs = ["difflib.go"],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/pmezard/go-difflib/difflib",
++    importpath = "github.com/pmezard/go-difflib/difflib",
++    visibility = ["//visibility:public"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":difflib",
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "difflib_test",
++    srcs = ["difflib_test.go"],
++    embed = [":difflib"],
++)
+diff --git a/vendor/github.com/stretchr/testify/BUILD.bazel b/vendor/github.com/stretchr/testify/BUILD.bazel
+new file mode 100644
+index 0000000..e0ce57b
+--- /dev/null
++++ b/vendor/github.com/stretchr/testify/BUILD.bazel
+@@ -0,0 +1,27 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "testify",
++    srcs = ["doc.go"],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/stretchr/testify",
++    importpath = "github.com/stretchr/testify",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/stretchr/testify/assert",
++        "@com_github_stretchr_testify//http:go_default_library",
++        "@com_github_stretchr_testify//mock:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":testify",
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "testify_test",
++    srcs = ["package_test.go"],
++    embed = [":testify"],
++    deps = ["//vendor/github.com/stretchr/testify/assert"],
++)
+diff --git a/vendor/github.com/stretchr/testify/assert/BUILD.bazel b/vendor/github.com/stretchr/testify/assert/BUILD.bazel
+new file mode 100644
+index 0000000..be51c3f
+--- /dev/null
++++ b/vendor/github.com/stretchr/testify/assert/BUILD.bazel
+@@ -0,0 +1,37 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "assert",
++    srcs = [
++        "assertion_format.go",
++        "assertion_forward.go",
++        "assertions.go",
++        "doc.go",
++        "errors.go",
++        "forward_assertions.go",
++        "http_assertions.go",
++    ],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/stretchr/testify/assert",
++    importpath = "github.com/stretchr/testify/assert",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vendor/github.com/davecgh/go-spew/spew",
++        "//vendor/github.com/pmezard/go-difflib/difflib",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":assert",
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "assert_test",
++    srcs = [
++        "assertions_test.go",
++        "forward_assertions_test.go",
++        "http_assertions_test.go",
++    ],
++    embed = [":assert"],
++)
+diff --git a/vendor/github.com/stretchr/testify/require/BUILD.bazel b/vendor/github.com/stretchr/testify/require/BUILD.bazel
+new file mode 100644
+index 0000000..c2c235c
+--- /dev/null
++++ b/vendor/github.com/stretchr/testify/require/BUILD.bazel
+@@ -0,0 +1,31 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
++
++go_library(
++    name = "require",
++    srcs = [
++        "doc.go",
++        "forward_requirements.go",
++        "require.go",
++        "require_forward.go",
++        "requirements.go",
++    ],
++    importmap = "github.com/twitchtv/twirp/vendor/github.com/stretchr/testify/require",
++    importpath = "github.com/stretchr/testify/require",
++    visibility = ["//visibility:public"],
++    deps = ["//vendor/github.com/stretchr/testify/assert"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":require",
++    visibility = ["//visibility:public"],
++)
++
++go_test(
++    name = "require_test",
++    srcs = [
++        "forward_requirements_test.go",
++        "requirements_test.go",
++    ],
++    embed = [":require"],
++)
