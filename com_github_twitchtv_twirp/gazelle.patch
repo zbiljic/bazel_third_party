@@ -2218,10 +2218,10 @@ index 0000000..6f5daa7
 +)
 diff --git a/protoc-gen-twirp/BUILD.bazel b/protoc-gen-twirp/BUILD.bazel
 new file mode 100644
-index 0000000..e4d2d14
+index 0000000..8446fce
 --- /dev/null
 +++ b/protoc-gen-twirp/BUILD.bazel
-@@ -0,0 +1,42 @@
+@@ -0,0 +1,43 @@
 +load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 +
 +go_library(
@@ -2261,6 +2261,7 @@ index 0000000..e4d2d14
 +    embed = [":protoc-gen-twirp_lib"],
 +    deps = [
 +        "//vendor/github.com/golang/protobuf/proto",
++        "//vendor/github.com/golang/protobuf/protoc-gen-go/descriptor",
 +        "//vendor/github.com/golang/protobuf/protoc-gen-go/plugin",
 +    ],
 +)
