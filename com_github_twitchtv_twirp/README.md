@@ -35,7 +35,7 @@ proto_library(
 go_proto_library(
     name = "example_go_proto",
     compilers = [
-        "@io_bazel_rules_go//proto:gogo_proto",
+        "@io_bazel_rules_go//proto:go_proto",
         "@com_github_zbiljic_bazel_third_party//com_github_twitchtv_twirp:go_proto_twirp",
     ],  # keep
     importpath = "<proto_importpath>",
