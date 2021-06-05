@@ -1,0 +1,346 @@
+diff --git a/cmd/protoc-gen-go-vtproto/BUILD.bazel b/cmd/protoc-gen-go-vtproto/BUILD.bazel
+new file mode 100644
+index 0000000..8fb8a7a
+--- /dev/null
++++ b/cmd/protoc-gen-go-vtproto/BUILD.bazel
+@@ -0,0 +1,23 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
++
++go_library(
++    name = "protoc-gen-go-vtproto_lib",
++    srcs = ["main.go"],
++    importpath = "github.com/planetscale/vtprotobuf/cmd/protoc-gen-go-vtproto",
++    visibility = ["//visibility:private"],
++    deps = [
++        "//features/grpc",
++        "//features/marshal",
++        "//features/pool",
++        "//features/size",
++        "//features/unmarshal",
++        "//generator",
++        "@org_golang_google_protobuf//compiler/protogen:go_default_library",
++    ],
++)
++
++go_binary(
++    name = "protoc-gen-go-vtproto",
++    embed = [":protoc-gen-go-vtproto_lib"],
++    visibility = ["//visibility:public"],
++)
+diff --git a/codec/drpc/BUILD.bazel b/codec/drpc/BUILD.bazel
+new file mode 100644
+index 0000000..fc0f199
+--- /dev/null
++++ b/codec/drpc/BUILD.bazel
+@@ -0,0 +1,18 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "drpc",
++    srcs = ["drpc_codec.go"],
++    importpath = "github.com/planetscale/vtprotobuf/codec/drpc",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@org_golang_google_protobuf//encoding/protojson:go_default_library",
++        "@org_golang_google_protobuf//proto:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":drpc",
++    visibility = ["//visibility:public"],
++)
+diff --git a/codec/grpc/BUILD.bazel b/codec/grpc/BUILD.bazel
+new file mode 100644
+index 0000000..bc2e4bb
+--- /dev/null
++++ b/codec/grpc/BUILD.bazel
+@@ -0,0 +1,14 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "grpc",
++    srcs = ["grpc_codec.go"],
++    importpath = "github.com/planetscale/vtprotobuf/codec/grpc",
++    visibility = ["//visibility:public"],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":grpc",
++    visibility = ["//visibility:public"],
++)
+diff --git a/conformance/BUILD.bazel b/conformance/BUILD.bazel
+new file mode 100644
+index 0000000..8f3808f
+--- /dev/null
++++ b/conformance/BUILD.bazel
+@@ -0,0 +1,12 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_test")
++
++go_test(
++    name = "conformance_test",
++    srcs = ["conformance_test.go"],
++    deps = [
++        "//conformance/internal/conformance",
++        "@org_golang_google_protobuf//encoding/protojson:go_default_library",
++        "@org_golang_google_protobuf//encoding/prototext:go_default_library",
++        "@org_golang_google_protobuf//proto:go_default_library",
++    ],
++)
+diff --git a/conformance/internal/conformance/BUILD.bazel b/conformance/internal/conformance/BUILD.bazel
+new file mode 100644
+index 0000000..23e7cba
+--- /dev/null
++++ b/conformance/internal/conformance/BUILD.bazel
+@@ -0,0 +1,32 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "conformance",
++    srcs = [
++        "conformance.pb.go",
++        "conformance_vtproto.pb.go",
++        "test_messages_proto2.pb.go",
++        "test_messages_proto3.pb.go",
++        "test_messages_proto3_vtproto.pb.go",
++    ],
++    importpath = "github.com/planetscale/vtprotobuf/conformance/internal/conformance",
++    visibility = ["//conformance:__subpackages__"],
++    deps = [
++        "@org_golang_google_protobuf//proto:go_default_library",
++        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
++        "@org_golang_google_protobuf//runtime/protoiface:go_default_library",
++        "@org_golang_google_protobuf//runtime/protoimpl:go_default_library",
++        "@org_golang_google_protobuf//types/known/anypb:go_default_library",
++        "@org_golang_google_protobuf//types/known/durationpb:go_default_library",
++        "@org_golang_google_protobuf//types/known/fieldmaskpb:go_default_library",
++        "@org_golang_google_protobuf//types/known/structpb:go_default_library",
++        "@org_golang_google_protobuf//types/known/timestamppb:go_default_library",
++        "@org_golang_google_protobuf//types/known/wrapperspb:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":conformance",
++    visibility = ["//conformance:__subpackages__"],
++)
+diff --git a/features/grpc/BUILD.bazel b/features/grpc/BUILD.bazel
+new file mode 100644
+index 0000000..17be5f9
+--- /dev/null
++++ b/features/grpc/BUILD.bazel
+@@ -0,0 +1,22 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "grpc",
++    srcs = [
++        "grpc.go",
++        "grpc_plugin.go",
++    ],
++    importpath = "github.com/planetscale/vtprotobuf/features/grpc",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//generator",
++        "@org_golang_google_protobuf//compiler/protogen:go_default_library",
++        "@org_golang_google_protobuf//types/descriptorpb:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":grpc",
++    visibility = ["//visibility:public"],
++)
+diff --git a/features/marshal/BUILD.bazel b/features/marshal/BUILD.bazel
+new file mode 100644
+index 0000000..2707d94
+--- /dev/null
++++ b/features/marshal/BUILD.bazel
+@@ -0,0 +1,20 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "marshal",
++    srcs = ["marshalto.go"],
++    importpath = "github.com/planetscale/vtprotobuf/features/marshal",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//generator",
++        "@org_golang_google_protobuf//compiler/protogen:go_default_library",
++        "@org_golang_google_protobuf//encoding/protowire:go_default_library",
++        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":marshal",
++    visibility = ["//visibility:public"],
++)
+diff --git a/features/pool/BUILD.bazel b/features/pool/BUILD.bazel
+new file mode 100644
+index 0000000..6598b04
+--- /dev/null
++++ b/features/pool/BUILD.bazel
+@@ -0,0 +1,19 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "pool",
++    srcs = ["pool.go"],
++    importpath = "github.com/planetscale/vtprotobuf/features/pool",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//generator",
++        "@org_golang_google_protobuf//compiler/protogen:go_default_library",
++        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":pool",
++    visibility = ["//visibility:public"],
++)
+diff --git a/features/size/BUILD.bazel b/features/size/BUILD.bazel
+new file mode 100644
+index 0000000..7b13417
+--- /dev/null
++++ b/features/size/BUILD.bazel
+@@ -0,0 +1,20 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "size",
++    srcs = ["size.go"],
++    importpath = "github.com/planetscale/vtprotobuf/features/size",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//generator",
++        "@org_golang_google_protobuf//compiler/protogen:go_default_library",
++        "@org_golang_google_protobuf//encoding/protowire:go_default_library",
++        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":size",
++    visibility = ["//visibility:public"],
++)
+diff --git a/features/unmarshal/BUILD.bazel b/features/unmarshal/BUILD.bazel
+new file mode 100644
+index 0000000..45ccafd
+--- /dev/null
++++ b/features/unmarshal/BUILD.bazel
+@@ -0,0 +1,20 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "unmarshal",
++    srcs = ["unmarshal.go"],
++    importpath = "github.com/planetscale/vtprotobuf/features/unmarshal",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//generator",
++        "@org_golang_google_protobuf//compiler/protogen:go_default_library",
++        "@org_golang_google_protobuf//encoding/protowire:go_default_library",
++        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":unmarshal",
++    visibility = ["//visibility:public"],
++)
+diff --git a/generator/BUILD.bazel b/generator/BUILD.bazel
+new file mode 100644
+index 0000000..8568bab
+--- /dev/null
++++ b/generator/BUILD.bazel
+@@ -0,0 +1,27 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "generator",
++    srcs = [
++        "features.go",
++        "generatedfile.go",
++        "generator.go",
++        "helpers.go",
++    ],
++    importpath = "github.com/planetscale/vtprotobuf/generator",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vtproto",
++        "@org_golang_google_protobuf//compiler/protogen:go_default_library",
++        "@org_golang_google_protobuf//encoding/protowire:go_default_library",
++        "@org_golang_google_protobuf//proto:go_default_library",
++        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
++        "@org_golang_google_protobuf//runtime/protoimpl:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":generator",
++    visibility = ["//visibility:public"],
++)
+diff --git a/testproto/github.com/planetscale/vtprotobuf/testproto/BUILD.bazel b/testproto/github.com/planetscale/vtprotobuf/testproto/BUILD.bazel
+new file mode 100644
+index 0000000..2e330f1
+--- /dev/null
++++ b/testproto/github.com/planetscale/vtprotobuf/testproto/BUILD.bazel
+@@ -0,0 +1,22 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "testproto",
++    srcs = [
++        "pool.pb.go",
++        "pool_vtproto.pb.go",
++    ],
++    importpath = "github.com/planetscale/vtprotobuf/testproto/github.com/planetscale/vtprotobuf/testproto",
++    visibility = ["//visibility:public"],
++    deps = [
++        "//vtproto",
++        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
++        "@org_golang_google_protobuf//runtime/protoimpl:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":testproto",
++    visibility = ["//visibility:public"],
++)
+diff --git a/vtproto/BUILD.bazel b/vtproto/BUILD.bazel
+new file mode 100644
+index 0000000..0508e54
+--- /dev/null
++++ b/vtproto/BUILD.bazel
+@@ -0,0 +1,19 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "vtproto",
++    srcs = ["ext.pb.go"],
++    importpath = "github.com/planetscale/vtprotobuf/vtproto",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
++        "@org_golang_google_protobuf//runtime/protoimpl:go_default_library",
++        "@org_golang_google_protobuf//types/descriptorpb:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":vtproto",
++    visibility = ["//visibility:public"],
++)
