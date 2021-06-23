@@ -20,7 +20,7 @@ def com_github_twitchtv_twirp_dependencies():
             # gazelle args: -repo_root . -go_prefix github.com/twitchtv/twirp -go_naming_convention import_alias -proto disable
             "@com_github_zbiljic_bazel_third_party//com_github_twitchtv_twirp:gazelle.patch",
         ],
-        sha256 = "ad44b22ca53ab8b281a8482826701a2d6b2de26209ee3f84cb47a5f52d747e32",
-        strip_prefix = "twirp-8.0.0",
-        url = "https://github.com/twitchtv/twirp/archive/v8.0.0.tar.gz",
+        sha256 = "0d186367d002da71cbb1e94341037208658ada2367fad43661d8f3a4182ed308",
+        strip_prefix = "twirp-8.1.0",
+        url = "https://github.com/twitchtv/twirp/archive/v8.1.0.tar.gz",
     )
