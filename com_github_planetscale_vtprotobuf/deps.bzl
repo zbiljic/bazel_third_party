@@ -20,7 +20,7 @@ def com_github_planetscale_vtprotobuf_dependencies():
             # gazelle args: -repo_root . -go_prefix github.com/planetscale/vtprotobuf -go_naming_convention import_alias -proto disable
             "@com_github_zbiljic_bazel_third_party//com_github_planetscale_vtprotobuf:gazelle.patch",
         ],
-        sha256 = "d0b3027c242ba4dda2decbe806b5df50255c0a39a04cdca42f5dbc6399b006e2",
-        strip_prefix = "vtprotobuf-d462593d1bfbae17901ee09031324e84e8ab4b43",
-        url = "https://github.com/planetscale/vtprotobuf/archive/d462593d1bfbae17901ee09031324e84e8ab4b43.zip",
+        sha256 = "c8fd57ebbfbff7f61b024e5c34df47bca5cedec685dc76d5eec3b4c3a8fb9a47",
+        strip_prefix = "vtprotobuf-6bcb78e80dd64844a35956f54d95b88b127a7015",
+        url = "https://github.com/planetscale/vtprotobuf/archive/6bcb78e80dd64844a35956f54d95b88b127a7015.zip",
     )

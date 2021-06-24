@@ -1,9 +1,9 @@
 diff --git a/cmd/protoc-gen-go-vtproto/BUILD.bazel b/cmd/protoc-gen-go-vtproto/BUILD.bazel
 new file mode 100644
-index 0000000..8fb8a7a
+index 0000000..3fdfd68
 --- /dev/null
 +++ b/cmd/protoc-gen-go-vtproto/BUILD.bazel
-@@ -0,0 +1,23 @@
+@@ -0,0 +1,24 @@
 +load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
 +
 +go_library(
@@ -19,6 +19,7 @@ index 0000000..8fb8a7a
 +        "//features/unmarshal",
 +        "//generator",
 +        "@org_golang_google_protobuf//compiler/protogen:go_default_library",
++        "@org_golang_google_protobuf//types/pluginpb:go_default_library",
 +    ],
 +)
 +
@@ -291,21 +292,21 @@ index 0000000..8568bab
 +    actual = ":generator",
 +    visibility = ["//visibility:public"],
 +)
-diff --git a/testproto/github.com/planetscale/vtprotobuf/testproto/BUILD.bazel b/testproto/github.com/planetscale/vtprotobuf/testproto/BUILD.bazel
+diff --git a/testproto/pool/BUILD.bazel b/testproto/pool/BUILD.bazel
 new file mode 100644
-index 0000000..2e330f1
+index 0000000..ee0b91e
 --- /dev/null
-+++ b/testproto/github.com/planetscale/vtprotobuf/testproto/BUILD.bazel
++++ b/testproto/pool/BUILD.bazel
 @@ -0,0 +1,22 @@
 +load("@io_bazel_rules_go//go:def.bzl", "go_library")
 +
 +go_library(
-+    name = "testproto",
++    name = "pool",
 +    srcs = [
 +        "pool.pb.go",
 +        "pool_vtproto.pb.go",
 +    ],
-+    importpath = "github.com/planetscale/vtprotobuf/testproto/github.com/planetscale/vtprotobuf/testproto",
++    importpath = "github.com/planetscale/vtprotobuf/testproto/pool",
 +    visibility = ["//visibility:public"],
 +    deps = [
 +        "//vtproto",
@@ -316,7 +317,34 @@ index 0000000..2e330f1
 +
 +alias(
 +    name = "go_default_library",
-+    actual = ":testproto",
++    actual = ":pool",
++    visibility = ["//visibility:public"],
++)
+diff --git a/testproto/proto3opt/BUILD.bazel b/testproto/proto3opt/BUILD.bazel
+new file mode 100644
+index 0000000..e3c65c2
+--- /dev/null
++++ b/testproto/proto3opt/BUILD.bazel
+@@ -0,0 +1,21 @@
++load("@io_bazel_rules_go//go:def.bzl", "go_library")
++
++go_library(
++    name = "proto3opt",
++    srcs = [
++        "opt.pb.go",
++        "opt_vtproto.pb.go",
++    ],
++    importpath = "github.com/planetscale/vtprotobuf/testproto/proto3opt",
++    visibility = ["//visibility:public"],
++    deps = [
++        "@org_golang_google_protobuf//reflect/protoreflect:go_default_library",
++        "@org_golang_google_protobuf//runtime/protoimpl:go_default_library",
++    ],
++)
++
++alias(
++    name = "go_default_library",
++    actual = ":proto3opt",
 +    visibility = ["//visibility:public"],
 +)
 diff --git a/vtproto/BUILD.bazel b/vtproto/BUILD.bazel
